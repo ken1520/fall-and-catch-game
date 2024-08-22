@@ -9,6 +9,9 @@
       // import zim from "https://zimjs.org/cdn/016/zim";
       import zim from "https://zimjs.org/cdn/016/zim_game";
 
+      const GAME_TIME = 3;
+      const FALLING_OBJECTS = ["p1.png", "p2.png", "p3.png", "p4.png", "e1.png", "e2.png"];
+
       // See Docs under Frame for FIT, FILL, FULL, and TAG
       new Frame(
         FIT,
@@ -17,21 +20,24 @@
         light,
         dark,
         ready,
-        ["p1.png", "p2.png", "p3.png", "p4.png", "boat.png"],
+        [...FALLING_OBJECTS, "boat.png"],
         "http://localhost:3000/images/"
       );
       function ready() {
         // given F (Frame), S (Stage), W (width), H (height)
-
+        let playerScore = 0;
         const pods = new Container().addTo().noMouse();
 
         // ZIM has dynamic parameters called ZIM VEE (launched in version 5)
         // Here we pass a min max object to vary the seconds
         // We store the interval so we can clear it at the end
         const inter = interval({ min: 0.2, max: 0.5 }, () => {
-          // Here we pass an array to randomly pick from the colors
+          // Here we pass an array to randomly pick from the colors 
           // this is another form of ZIM VEE values
-          const pod = new Circle(20, [yellow, red, blue, silver, grey, dark])
+
+          // const pod = new Circle(20, [yellow, red, blue, silver, grey, dark])
+          const pod = new Pic(FALLING_OBJECTS[rand(FALLING_OBJECTS.length - 1)])
+            .siz(80, 80, true)
             .loc(rand(W), -100, pods) // inside pods container
             .animate({
               // a string value is relative position
@@ -55,16 +61,17 @@
           .pos(0, 40, CENTER, BOTTOM);
 
         // set a speed of 15 and a boundary of the stage, S
-        new MotionController(paddle, "keydown", 15, HORIZONTAL, S);
+        const motion =  new MotionController(paddle, "keydown", 15, HORIZONTAL, S);
 
-        // INDICATOR
-        const indicator = new Indicator({
-          fill: true,
-          num: 6,
-          width: 300,
-          selectedIndex: -1,
-          indicatorType: "heart",
-        }).pos(60, 40, CENTER);
+        const label = new Label({
+          text: `Your Score: ${playerScore}`,
+          size:50,
+          font:"courier",
+          color:white,
+          rollColor:red,
+          bold:true,
+          backgroundColor: purple,
+        }).pos(60,60, CENTER).tap(()=>{zog("tapping");});
 
         // TIMER
         // timer needs the ZIM game module
@@ -80,30 +87,86 @@
         // HITTEST
         // We store the Ticker function so we can turn it off at the end
         const ticker = Ticker.add(() => {
+          // Stop the game after GAME_TIME seconds
+          if (timer.time == GAME_TIME) {
+            Ticker.remove(ticker);
+            inter.clear();
+            stopAnimate();
+            timer.stop();
+            motion.pause();
+
+            const panel = new Panel({
+              width:400,
+              height:250,
+              bgColor:new GradientColor([black,dark],90),
+              titleBar:"CONTENT",
+              draggable:true,
+              content:{
+                  message:"We shall greet you!",
+                  color:lighter, // override default darker
+                  display:new TextInput({placeholder:"enter name"}).sca(.7),
+                  align:CENTER,   // default
+                  spacingV:25,    // 20 is default
+                  spacingH:10,    // default
+                  buttonScale:.5, // default
+                  buttons:[ // or just a single button object
+                    {
+                        label:"GREET",
+                        bgColor:new GradientColor([green,blue],90),
+                        width:300,
+                        call:()=>{
+                          new Emitter({
+                              obj:new Label("Hello "+panel.display.text, 80, null, [green,blue,orange,yellow,pink]),
+                              startPaused:true,
+                              shrink:false,
+                              life:2,
+                              gravity:2,
+                              force:{min:2,max:6}
+                          }).loc(panel).spurt(20).on("spurtfizzed",e=>{e.target.dispose();});
+                        }
+                    }, {
+                        // button:new Button(), // can also specify a custom Button
+                        label:"CLEAR",
+                        bgColor:new GradientColor([yellow,orange],90),
+                        call:()=>{panel.display.text="";}
+                    }
+                  ]
+              }
+            }).centerReg();
+
+            // new Button({label:"SUBMIT"}).loc(100, 200).tap(()=>{
+            //   zog(input.text); // whatever is typed into the LabelInput
+            // });
+          }
+
           // loop to check each pod for hitting paddle
           pods.loop((pod) => {
             // there are a dozen types of hitTests
             if (pod.hitTestCircleRect(paddle)) {
-              zog("hit!");
+              zog("hit!", pod.item.id);
 
-              if (pod.color == red) indicator.selectedIndex++;
-              else indicator.selectedIndex--;
+              label.text = 'Your Score: ' + ++playerScore;
+              // if (pod.color == red) {
+              //   indicator.selectedIndex++;
+              // } else {
+              //   indicator.selectedIndex--;
+              // }
 
-              // Check win
-              if (indicator.selectedIndex == indicator.num - 1) {
-                // win!
-                Ticker.remove(ticker);
-                inter.clear();
-                stopAnimate();
-                timer.stop();
-                new Pane(
-                  "Passion Pods Collected!\n\nTime: " + timer.time,
-                  red,
-                  white
-                ).show(() => {
-                  location.reload();
-                });
-              }
+              // // Check win
+              // if (indicator.selectedIndex == indicator.num - 1) {
+              //   // win!
+              //   Ticker.remove(ticker);
+              //   inter.clear();
+              //   stopAnimate();
+              //   timer.stop();
+              //   new Pane (
+              //     "Passion Pods Collected!\n\nTime: " + timer.time,
+              //     red,
+              //     white
+              //   ).show(() => {
+              //     location.reload();
+              //   });
+              // }
 
               pod.removeFrom();
             }
