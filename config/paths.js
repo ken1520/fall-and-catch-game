@@ -3,5 +3,6 @@ module.exports = [
   'GET /game views.controller game',
   'GET /leaderboard views.controller leaderboard',
 
-  'GET /images/:imageName assets.controller getImage',
-]
+  'POST /api/v1/leaderboard leaderboard.controller create',
+  'GET /api/v1/leaderboard leaderboard.controller index',
+];
