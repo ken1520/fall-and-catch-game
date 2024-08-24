@@ -1,8 +1,8 @@
 module.exports = [
-  'GET / views.controller home',
-  'GET /game views.controller game',
-  'GET /leaderboard views.controller leaderboard',
+  'GET / views_controller home',
+  'GET /game views_controller game',
+  'GET /leaderboard views_controller leaderboard',
 
-  'POST /api/v1/leaderboard leaderboard.controller create',
-  'GET /api/v1/leaderboard leaderboard.controller index',
+  'POST /api/v1/leaderboard leaderboard_controller create',
+  'GET /api/v1/leaderboard leaderboard_controller index',
 ];
