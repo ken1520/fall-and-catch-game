@@ -10,6 +10,16 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 const router = require('./router');
+const session = require('express-session');
+
+app.use(
+  session({
+    secret: process.env.COOKIES_SECRET,
+    name: 'fallgame',
+    saveUninitialized: true,
+    resave: false,
+  })
+);
 
 app.use(morganLog());
 

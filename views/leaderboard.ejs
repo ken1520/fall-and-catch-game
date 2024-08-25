@@ -5,85 +5,67 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fall and Catch - Leaderboard</title>
-    <!-- Bootstrap CSS -->
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* Full-screen background image styling */
-        body, html {
-            height: 100%;
-            margin: 0;
-            background-image: url('/images/bg2.png'); /* Replace with your background image URL */
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Style for the instruction panel */
-        .instruction-panel {
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 500px;
-            /* text-align: center; */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
-        }
-
-        .instruction-panel img {
-            width: 100%;
-        }
-
-        /* Style for buttons to align horizontally */
-        .button-group {
-            margin-top: 20px;
-        }
+      .instruction-panel {
+        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+        padding: 20px;
+        margin: 20px;
+        border-radius: 10px;
+        min-width: 50%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
+        overflow-y: scroll;
+        height: inherit;
+      }
     </style>
 </head>
 <body>
-    <div class="instruction-panel container">
+  <div class="instruction-panel">
+    
+    <div class="container">
       <div class="row">
-        <div class="col">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Name</th>
-                <th scope="col">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let i = 0; i < leaderboard.length; i++) { %>
-                <tr>
-                  <th scope="row"><%= i + 1 %></th>
-                  <td><%= leaderboard[i].username %></td>
-                  <td><%= leaderboard[i].score %></td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
+        <div class="col-8">
+          <h1>Leaderboard</h1>
         </div>
-        <div class="col">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Name</th>
-                <th scope="col">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let i = 0; i < leaderboard.length; i++) { %>
-                <tr>
-                  <th scope="row"><%= i + 1 %></th>
-                  <td><%= leaderboard[i].username %></td>
-                  <td><%= leaderboard[i].score %></td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
+        <div class="col-4">
+          <a href="/" class="btn btn-outline-info">Back to Home</a>
         </div>
       </div>
+      <div class="row leaderboard-table">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Name</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < leaders.length ; i++) { %>
+                  <% if (leaders[i].name === currentUser.name) { %>
+                  <tr class="table-info">
+                    <% } else { %>
+                  <tr>
+                    <% } %>
+                    <th scope="row"><%= i + 1 %></th>
+                    <td><%= leaders[i].name %></td>
+                    <td><%= leaders[i].score %></td>
+                  </tr>
+                <% } %>
+
+                <% if (currentUser.rank > (leaders.length + 1) && currentUser.name) { %>
+                  <tr class="table-info">
+                    <th scope="row"><%= currentUser.rank %></th>
+                    <td><%= currentUser.name %></td>
+                    <td><%= currentUser.score %></td>
+                  </tr>
+                <% } %>
+            </tbody>
+          </table>
+      </div>
     </div>
+  </div>
 </body>
 </html>
