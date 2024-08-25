@@ -1,43 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
     <title>Fall and Catch - Game</title>
 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module">
-      import zim from "https://zimjs.org/cdn/016/zim_game";
+      import zim from 'https://zimjs.org/cdn/016/zim_game';
 
       let playerScore = 0;
       const GAME_TIME = 60;
       const FALLING_OBJECTS = [
-        "p1.png",
-        "p2.png",
-        "p3.png",
-        "p4.png",
-        "e1.png",
-        "e2.png",
+        'p1.png',
+        'p2.png',
+        'p3.png',
+        'p4.png',
+        'e1.png',
+        'e2.png',
       ];
 
       new Frame(
-        "game",
+        'game',
         null,
         null,
         light,
         dark,
         ready,
-        [...FALLING_OBJECTS, "boat.png", "bg1.png"],
-        "http://localhost:3000/images/"
+        [...FALLING_OBJECTS, 'boat.png', 'bg1.png'],
+        'http://localhost:3000/images/'
       );
       function ready() {
         // background of the game
-        new Pic("bg1.png").center();
+        new Pic('bg1.png').center();
 
         const pods = new Container().addTo().noMouse();
 
@@ -47,7 +50,7 @@
             .loc(rand(W), -100, pods)
             .animate({
               props: { x: String(rand(-100, 100)), y: H + 100 },
-              ease: "linear",
+              ease: 'linear',
               time: { min: 2, max: 5 },
               call: (target) => {
                 // receives what just stopped animating
@@ -56,14 +59,14 @@
             });
         });
 
-        const paddle = new Pic("boat.png")
+        const paddle = new Pic('boat.png')
           .centerReg()
           .siz(100, 100, true)
           .pos(0, 40, CENTER, BOTTOM);
 
         const motion = new MotionController(
           paddle,
-          "keydown",
+          'keydown',
           15,
           HORIZONTAL,
           S
@@ -75,8 +78,7 @@
           color: white,
           bold: true,
           backgroundColor: purple,
-        })
-          .pos(0, 50, CENTER)
+        }).pos(0, 50, CENTER);
 
         const timer = new Timer({
           time: 0,
@@ -100,38 +102,41 @@
               width: 400,
               height: 250,
               bgColor: new GradientColor([black, dark], 90),
-              titleBar: "GAME OVER",
+              titleBar: 'GAME OVER',
               draggable: true,
               content: {
                 message:
                   "What's your name?\n You will be added to the leaderboard",
                 color: lighter,
-                display: new TextInput({ placeholder: "enter name" }).sca(0.7),
+                display: new TextInput({ placeholder: 'enter name' }).sca(0.7),
                 align: CENTER,
                 spacingV: 25,
                 spacingH: 10,
                 buttonScale: 0.5,
                 buttons: [
                   {
-                    label: "ENTER",
+                    label: 'ENTER',
                     bgColor: new GradientColor([green, blue], 90),
                     width: 300,
                     call: async () => {
-                      axios.post('/api/v1/leaderboard', {
-                        username: panel.display.text,
-                        score: playerScore,
-                      }).then((response) => {
-                        location.href = "/leaderboard";
-                      }).catch((error) => {
-                        console.log(error);
-                      });
+                      axios
+                        .post('/api/v1/leaderboard', {
+                          username: panel.display.text,
+                          score: playerScore,
+                        })
+                        .then((response) => {
+                          location.href = '/leaderboard';
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
                     },
                   },
                   {
-                    label: "CLEAR",
+                    label: 'CLEAR',
                     bgColor: new GradientColor([yellow, orange], 90),
                     call: () => {
-                      panel.display.text = "";
+                      panel.display.text = '';
                     },
                   },
                 ],
@@ -142,13 +147,13 @@
           // loop to check each pod for hitting paddle
           pods.loop((pod) => {
             if (pod.hitTestCircleRect(paddle)) {
-              if (pod.item.id.startsWith("p")) {
+              if (pod.item.id.startsWith('p')) {
                 playerScore += 50;
-              } else if (pod.item.id.startsWith("e")) {
+              } else if (pod.item.id.startsWith('e')) {
                 playerScore -= 100;
               }
 
-              label.text = "Your Score: " + playerScore;
+              label.text = 'Your Score: ' + playerScore;
 
               pod.removeFrom();
             }
