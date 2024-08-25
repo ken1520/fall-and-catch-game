@@ -3,6 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <title>Falling</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      /* Full-screen background image styling */
+      body, html {
+          height: 100vh;
+          width: 100vw;
+          margin: 0;
+          background-image: url('/images/bg2.png');
+          background-size: cover;
+          background-position: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      #game {
+        max-width: 100%;
+        height: 100%;
+      }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- zimjs.com - JavaScript Canvas Framework -->
@@ -22,9 +43,9 @@
 
       // See Docs under Frame for FIT, FILL, FIT, and TAG
       new Frame(
-        FIT,
-        1024,
-        768,
+        "game",
+        null,
+        null,
         light,
         dark,
         ready,
@@ -186,5 +207,7 @@
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
   </head>
-  <body></body>
+  <body>
+    <div id="game"></div>
+  </body>
 </html>
