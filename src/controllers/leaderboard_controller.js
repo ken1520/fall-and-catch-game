@@ -30,8 +30,8 @@ const index = async (req, res) => {
     );
     res.send(topPlayers);
   } catch (error) {
-    console.log(error);
-    res.status(500).send('server error');
+    logger.error(error.stack);
+    res.status(500).send(error.message);
   }
 };
 

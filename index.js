@@ -13,6 +13,7 @@ const router = require('./router');
 const session = require('express-session');
 const redisClient = require('./src/plugins/redis');
 
+// Set up session
 app.use(
   session({
     secret: process.env.COOKIES_SECRET,
@@ -26,20 +27,22 @@ app.use(morganLog());
 
 app.use(bodyParser.json());
 
+// Set up routes
 app.use(router);
 
 let server;
 
+// Connect to MongoDB, Redis and start the server
 mongoose
   .connect(`${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}`)
   .then(() => {
     logger.info('Connected to MongoDB');
 
     redisClient.on('error', (err) => {
-      logger.error(`Redis Client Error: ${err}`)
+      logger.error(`Redis Client Error: ${err}`);
     });
 
-    redisClient.connect()
+    redisClient.connect();
     logger.info('Connected to Redis');
 
     server = app.listen(process.env.PORT, () => {
@@ -48,6 +51,12 @@ mongoose
   })
   .catch((err) => logger.error('Error connecting to MongoDB:', err));
 
+// Error handling
+app.use((req, res) => {
+  res.render('404');
+});
+
+// Graceful shutdown
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received');
   if (server) {
