@@ -23,7 +23,7 @@ paths.forEach((path) => {
 
     router[method.toLowerCase()](route, targetController[action]);
   } catch (error) {
-    console.error('Path error:', error);
+    logger.error('Path error:', error);
   }
 });
 
