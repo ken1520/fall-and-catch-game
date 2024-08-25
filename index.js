@@ -11,6 +11,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 const router = require('./router');
 const session = require('express-session');
+const redisClient = require('./src/plugins/redis');
 
 app.use(
   session({
@@ -33,6 +34,14 @@ mongoose
   .connect(`${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}`)
   .then(() => {
     logger.info('Connected to MongoDB');
+
+    redisClient.on('error', (err) => {
+      logger.error(`Redis Client Error: ${err}`)
+    });
+
+    redisClient.connect()
+    logger.info('Connected to Redis');
+
     server = app.listen(process.env.PORT, () => {
       logger.info(`Server listening to port ${process.env.PORT}`);
     });
