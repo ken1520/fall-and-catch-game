@@ -20,22 +20,6 @@ const create = async (req, res) => {
   }
 };
 
-const index = async (req, res) => {
-  try {
-    const topPlayers = await redisClient.zRangeWithScores(
-      LEADERBOARD_CACHE_KEY,
-      0,
-      99,
-      { REV: true }
-    );
-    res.send(topPlayers);
-  } catch (error) {
-    logger.error(error.stack);
-    res.status(500).send(error.message);
-  }
-};
-
 module.exports = {
   create,
-  index,
 };

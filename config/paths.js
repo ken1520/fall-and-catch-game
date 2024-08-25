@@ -4,5 +4,4 @@ module.exports = [
   'GET /leaderboard views_controller leaderboard',
 
   'POST /api/v1/leaderboard leaderboard_controller create',
-  'GET /api/v1/leaderboard leaderboard_controller index',
 ];

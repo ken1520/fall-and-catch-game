@@ -1,5 +1,6 @@
 const redisClient = require('../plugins/redis');
 const logger = require('../../config/winston');
+const LeaderBoard = require('../models/leaderboard.model');
 
 const LEADERBOARD_CACHE_KEY = 'game:leaderboard';
 
@@ -13,16 +14,21 @@ const game = async (req, res) => {
 
 const leaderboard = async (req, res) => {
   try {
-    const topPlayers = await redisClient.zRangeWithScores(
+    let topPlayers = await redisClient.zRangeWithScores(
       LEADERBOARD_CACHE_KEY,
       0,
       99,
       { REV: true }
     );
 
+    // Get from database if cache is empty
+    if (!topPlayers) {
+      topPlayers = await LeaderBoard.find().sort({ score: -1 }).limit(100);
+    }
+
     let leaders = topPlayers.map((player) => {
       return {
-        name: player.value,
+        name: player.value || player.username,
         score: player.score,
       };
     });

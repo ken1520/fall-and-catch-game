@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const router = require('./router');
 const session = require('express-session');
 const redisClient = require('./src/plugins/redis');
+const { syncCacheToDb } = require('./src/cronjobs');
 
 // Set up session
 app.use(
@@ -29,6 +30,9 @@ app.use(bodyParser.json());
 
 // Set up routes
 app.use(router);
+
+// Set up cron jobs
+syncCacheToDb.start();
 
 let server;
 
