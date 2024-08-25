@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Falling</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- zimjs.com - JavaScript Canvas Framework -->
     <script type="module">
       // import zim from "https://zimjs.org/cdn/016/zim";
@@ -19,7 +20,7 @@
         "e2.png",
       ];
 
-      // See Docs under Frame for FIT, FILL, FULL, and TAG
+      // See Docs under Frame for FIT, FILL, FIT, and TAG
       new Frame(
         FIT,
         1024,
@@ -27,10 +28,13 @@
         light,
         dark,
         ready,
-        [...FALLING_OBJECTS, "boat.png"],
+        [...FALLING_OBJECTS, "boat.png", "bg1.png"],
         "http://localhost:3000/images/"
       );
       function ready() {
+        // background of the game
+        new Pic("bg1.png").center();
+
         // given F (Frame), S (Stage), W (width), H (height)
         let playerScore = 0;
         const pods = new Container().addTo().noMouse();
@@ -79,16 +83,11 @@
         const label = new Label({
           text: `Your Score: ${playerScore}`,
           size: 50,
-          font: "courier",
           color: white,
-          rollColor: red,
           bold: true,
           backgroundColor: purple,
         })
-          .pos(60, 60, CENTER)
-          .tap(() => {
-            zog("tapping");
-          });
+          .pos(0, 50, CENTER)
 
         // TIMER
         // timer needs the ZIM game module
@@ -99,10 +98,11 @@
           color: white,
         })
           .sca(0.7)
-          .pos(50, 44, RIGHT);
+          .pos(50, 50, RIGHT);
 
         // HITTEST
         // We store the Ticker function so we can turn it off at the end
+        const ajax = new Ajax();
         const ticker = Ticker.add(() => {
           // Stop the game after GAME_TIME seconds
           if (timer.time == GAME_TIME) {
@@ -133,25 +133,15 @@
                     label: "ENTER",
                     bgColor: new GradientColor([green, blue], 90),
                     width: 300,
-                    call: () => {
-                      new Emitter({
-                        obj: new Label(
-                          "Hello " + panel.display.text,
-                          80,
-                          null,
-                          [green, blue, orange, yellow, pink]
-                        ),
-                        startPaused: true,
-                        shrink: false,
-                        life: 2,
-                        gravity: 2,
-                        force: { min: 2, max: 6 },
-                      })
-                        .loc(panel)
-                        .spurt(20)
-                        .on("spurtfizzed", (e) => {
-                          e.target.dispose();
-                        });
+                    call: async () => {
+                      axios.post('/api/v1/leaderboard', {
+                        username: panel.display.text,
+                        score: playerScore,
+                      }).then((response) => {
+                        location.href = "/leaderboard";
+                      }).catch((error) => {
+                        console.log(error);
+                      });
                     },
                   },
                   {
