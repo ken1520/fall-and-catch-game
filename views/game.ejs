@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- zimjs.com - JavaScript Canvas Framework -->
     <script type="module">
       import zim from "https://zimjs.org/cdn/016/zim_game";
 
@@ -32,7 +31,6 @@
         "e2.png",
       ];
 
-      // See Docs under Frame for FIT, FILL, FIT, and TAG
       new Frame(
         "game",
         null,
@@ -47,24 +45,13 @@
         // background of the game
         new Pic("bg1.png").center();
 
-        // given F (Frame), S (Stage), W (width), H (height)
         const pods = new Container().addTo().noMouse();
 
-        // ZIM has dynamic parameters called ZIM VEE (launched in version 5)
-        // Here we pass a min max object to vary the seconds
-        // We store the interval so we can clear it at the end
         const inter = interval({ min: 0.2, max: 0.5 }, () => {
-          // Here we pass an array to randomly pick from the colors
-          // this is another form of ZIM VEE values
-
-          // const pod = new Circle(20, [yellow, red, blue, silver, grey, dark])
           const pod = new Pic(FALLING_OBJECTS[rand(FALLING_OBJECTS.length - 1)])
             .siz(80, 80, true)
-            .loc(rand(W), -100, pods) // inside pods container
+            .loc(rand(W), -100, pods)
             .animate({
-              // a string value is relative position
-              // so animate to left or right 100 from its current x
-              // and then off the screen to the bottom
               props: { x: String(rand(-100, 100)), y: H + 100 },
               ease: "linear",
               time: { min: 2, max: 5 },
@@ -75,14 +62,11 @@
             });
         });
 
-        // PADDLE
-        // const paddle = new Rectangle(100, 30, white)
         const paddle = new Pic("boat.png")
           .centerReg()
           .siz(100, 100, true)
           .pos(0, 40, CENTER, BOTTOM);
 
-        // set a speed of 15 and a boundary of the stage, S
         const motion = new MotionController(
           paddle,
           "keydown",
@@ -100,8 +84,6 @@
         })
           .pos(0, 50, CENTER)
 
-        // TIMER
-        // timer needs the ZIM game module
         const timer = new Timer({
           time: 0,
           down: false,
@@ -111,8 +93,6 @@
           .sca(0.7)
           .pos(50, 50, RIGHT);
 
-        // HITTEST
-        // We store the Ticker function so we can turn it off at the end
         const ticker = Ticker.add(() => {
           // Stop the game after GAME_TIME seconds
           if (timer.time == GAME_TIME) {
@@ -131,14 +111,13 @@
               content: {
                 message:
                   "What's your name?\n You will be added to the leaderboard",
-                color: lighter, // override default darker
+                color: lighter,
                 display: new TextInput({ placeholder: "enter name" }).sca(0.7),
-                align: CENTER, // default
-                spacingV: 25, // 20 is default
-                spacingH: 10, // default
-                buttonScale: 0.5, // default
+                align: CENTER,
+                spacingV: 25,
+                spacingH: 10,
+                buttonScale: 0.5,
                 buttons: [
-                  // or just a single button object
                   {
                     label: "ENTER",
                     bgColor: new GradientColor([green, blue], 90),
@@ -155,7 +134,6 @@
                     },
                   },
                   {
-                    // button:new Button(), // can also specify a custom Button
                     label: "CLEAR",
                     bgColor: new GradientColor([yellow, orange], 90),
                     call: () => {
@@ -165,18 +143,11 @@
                 ],
               },
             }).centerReg();
-
-            // new Button({label:"SUBMIT"}).loc(100, 200).tap(()=>{
-            //   zog(input.text); // whatever is typed into the LabelInput
-            // });
           }
 
           // loop to check each pod for hitting paddle
           pods.loop((pod) => {
-            // there are a dozen types of hitTests
             if (pod.hitTestCircleRect(paddle)) {
-              zog("hit!", pod.item.id);
-
               if (pod.item.id.startsWith("p")) {
                 playerScore += 50;
               } else if (pod.item.id.startsWith("e")) {
@@ -187,12 +158,9 @@
 
               pod.removeFrom();
             }
-          }, true); // loop backwards when removing objects
+          }, true);
         });
-
-        //   pod.dispose();
-        // }
-      } // end ready
+      }
     </script>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
   </head>
