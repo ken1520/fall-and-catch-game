@@ -22,7 +22,7 @@ const leaderboard = async (req, res) => {
     );
 
     // Get from database if cache is empty
-    if (!topPlayers) {
+    if (!topPlayers || topPlayers.length === 0) {
       topPlayers = await LeaderBoard.find().sort({ score: -1 }).limit(100);
     }
 
