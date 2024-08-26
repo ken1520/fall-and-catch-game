@@ -45,7 +45,8 @@
         const pods = new Container().addTo().noMouse();
 
         const inter = interval({ min: 0.2, max: 0.5 }, () => {
-          const pod = new Pic(FALLING_OBJECTS[rand(FALLING_OBJECTS.length - 1)])
+          // const pod = new Pic(FALLING_OBJECTS[rand(FALLING_OBJECTS.length - 1)])
+          const pod = new Circle(20, [red, green])
             .siz(80, 80, true)
             .loc(rand(W), -100, pods)
             .animate({
@@ -59,7 +60,8 @@
             });
         });
 
-        const paddle = new Pic('boat.png')
+        const paddle = new Rectangle(100, 30, white)
+        // const paddle = new Pic('boat.png')
           .centerReg()
           .siz(100, 100, true)
           .pos(0, 40, CENTER, BOTTOM);
@@ -147,10 +149,13 @@
           // loop to check each pod for hitting paddle
           pods.loop((pod) => {
             if (pod.hitTestCircleRect(paddle)) {
-              if (pod.item.id.startsWith('p')) {
-                playerScore += 50;
-              } else if (pod.item.id.startsWith('e')) {
-                playerScore -= 100;
+              switch (pod.color) {
+                case red:
+                  playerScore -= 20;
+                  break;
+                case green:
+                  playerScore += 10;
+                  break;
               }
 
               label.text = 'Your Score: ' + playerScore;
