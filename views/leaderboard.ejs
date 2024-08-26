@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fall and Catch - Leaderboard</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="leaderboard-panel">
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h1>Leaderboard</h1>
+        </div>
+        <div class="col-4">
+          <a href="/" class="btn btn-outline-info">Back to Home</a>
+        </div>
+      </div>
+      <div class="row leaderboard-table">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Name</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < leaders.length ; i++) { %>
+                  <% if (leaders[i].name === currentUser.name) { %>
+                  <tr class="table-info">
+                    <% } else { %>
+                  <tr>
+                    <% } %>
+                    <th scope="row"><%= i + 1 %></th>
+                    <td><%= leaders[i].name %></td>
+                    <td><%= leaders[i].score %></td>
+                  </tr>
+                <% } %>
+
+                <% if (currentUser.rank > (leaders.length + 1) && currentUser.name) { %>
+                  <tr class="table-info">
+                    <th scope="row"><%= currentUser.rank %></th>
+                    <td><%= currentUser.name %></td>
+                    <td><%= currentUser.score %></td>
+                  </tr>
+                <% } %>
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
