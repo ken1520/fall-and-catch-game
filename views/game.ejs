@@ -19,14 +19,6 @@
 
       let playerScore = 0;
       const GAME_TIME = 60;
-      const FALLING_OBJECTS = [
-        'p1.png',
-        'p2.png',
-        'p3.png',
-        'p4.png',
-        'e1.png',
-        'e2.png',
-      ];
 
       new Frame(
         'game',
@@ -35,17 +27,11 @@
         light,
         dark,
         ready,
-        [...FALLING_OBJECTS, 'boat.png', 'bg1.png'],
-        'http://localhost:3000/images/'
       );
       function ready() {
-        // background of the game
-        new Pic('bg1.png').center();
-
         const pods = new Container().addTo().noMouse();
 
-        const inter = interval({ min: 0.2, max: 0.5 }, () => {
-          // const pod = new Pic(FALLING_OBJECTS[rand(FALLING_OBJECTS.length - 1)])
+        const inter = interval({ min: 0.2, max: 0.8 }, () => {
           const pod = new Circle(20, [red, green])
             .siz(80, 80, true)
             .loc(rand(W), -100, pods)
@@ -54,16 +40,14 @@
               ease: 'linear',
               time: { min: 2, max: 5 },
               call: (target) => {
-                // receives what just stopped animating
                 target.dispose();
               },
             });
         });
 
         const paddle = new Rectangle(100, 30, white)
-        // const paddle = new Pic('boat.png')
           .centerReg()
-          .siz(100, 100, true)
+          .siz(150, 50, true)
           .pos(0, 40, CENTER, BOTTOM);
 
         const motion = new MotionController(
@@ -151,10 +135,10 @@
             if (pod.hitTestCircleRect(paddle)) {
               switch (pod.color) {
                 case red:
-                  playerScore -= 20;
+                  playerScore -= 10;
                   break;
                 case green:
-                  playerScore += 10;
+                  playerScore += 20;
                   break;
               }
 
